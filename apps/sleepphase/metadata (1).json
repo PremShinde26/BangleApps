@@ -1,0 +1,19 @@
+{
+  "id": "sleeplogger",
+  "name": "Sleep Logger",
+  "version": "1.0.0",
+  "description": "Manually track sleep (HR+Movement) and fetch the raw data using a companion Android app.",
+  "icon": "app-icon.js",
+  "screenshots": [{"url":"hrv.png"}],
+  "type": "app",
+  "tags": "health,tool,sleep,android",
+  "supports": ["BANGLEJS1"],
+  "storage": [
+    {"name":"app.js","url":"app.js"},
+    {"name":"boot.js","url":"boot.js"}
+  ],
+  "data": [
+    {"name":"sleeplogger.data.json"},
+    {"name":"sleeplogger.settings.json"}
+  ]
+}
