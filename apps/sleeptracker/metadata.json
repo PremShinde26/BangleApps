@@ -4,14 +4,14 @@
   "shortName": "SleepTrack",
   "version": "0.01",
   "description": "Logs Heart Rate and Movement for sleep analysis and allows data to be fetched by a companion Android app.",
-  "icon": "app.png",
+  "icon": "icon.png",
   "tags": "health,tool,bluetooth",
   "supports": ["BANGLEJS"],
   "readme": "README.md",
   "storage": [
     { "name": "sleeptracker.app.js", "url": "app.js" },
     { "name": "sleeptracker.boot.js", "url": "boot.js" },
-    { "name": "icon.png", "url": "app-icon.js", "evaluate": true }
+    { "name": "sleeptracker.png", "url": "app-icon.js", "evaluate": true }
   ],
   "data": [
     { "name": "sleeptracker.settings.json" },
