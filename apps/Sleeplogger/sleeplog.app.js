@@ -1,163 +1,84 @@
-// File: sleeplog.app.js (Version: Multi-screen UI)
+// File: sleeplog.app.js (Final Production Version)
+// Purpose: A simple, clean UI to start/stop logging and to initiate data sending.
 
-const SETTINGS_FILE = 'slee", 40).setColor(color).setFontAlign(0, 0);
-  g.drawString(label, g.getWidth() / 2, g.getHeight() / 2);
-}
+const SETTINGS_FILE = 'sleeplog.settings.json';
 
-// --- SCREEN 1: The Idle/Start Screen ---
-function showStartScreen() {
+// --- Main UI: The big Start/Stop screen ---
+function drawMainUI() {
+  let settings = require("Storage").readJSON(SETTINGS_FILE, true) || {};
+  let isLogging = settings.isLogging || false;
+
   g.clear();
   Bangle.loadWidgets();
   Bangle.drawWidgets();
-  drawButton("START", "#00ff00");
-  setWatch(startLogging, BTN1, { edge: "falling" });
+  g.setFontAlign(0, 0); // Center alignment
+
+  if (isLogging) {
+    g.setFont("Vector", 40).setColor("#ff0000");
+    g.drawString("LOGGING", g.getWidth()/2, g.getHeight()/2 - 30);
+    g.setFont("6x8", 2).setColor(g.theme.fg);
+    g.drawString("Press BTN1 to STOP", g.getWidth()/2, g.getHeight()/2 + 30);
+  } else {
+    g.setFont("Vector", 40).setColor("#00ff00");
+    g.drawString("IDLE", g.getWidth()/2, g.getHeight()/2 - 30);
+    g.setFont("6x8", 2).setColor(g.theme.fg);
+    g.drawString("Press BTN1 to START", g.getWidth()/2, g.getHeight()/2 + 30);
+  }
+  
+  // Updated text as per your request
+  g.setFont("6x8", 2).setColor(g.theme.fg);
+  g.drawString("BTN3: Send | BTN2: Exit", g.getWidth()/2, g.getHeight() - 20);
 }
 
-// --- SCREEN 2: The Logging/Stop Screen ---
-function showStopScreen() {
+// --- Screen 2: Send Data Mode ---
+function showSendDataScreen() {
   g.clear();
-  Bangle.loadWidgets();
-  Bangle.drawWidgets();
-  drawButton("STOP", "#ff0000");
-  setWatch(stopLogging, BTN1, { edge: "falling" });
-}
+  g.setFont("Vector", 20).setFontAlign(0, 0);
+  g.drawString("Ready to Send", g.getWidth()/2, g.getHeight()/2 - 40);
+  g.setFont("6x8", 2).setFontAlign(0,0);
+  g.drawString("Open Android app and\npress 'Fetch Data'.", g.getWidth()/2, g.getHeight()/2);
+  g.setFont("6x8", 1).drawString("Press any button to go back.", g.getWidth()/2, g.getHeight() - 10);
 
-// --- SCREEN 3: The Data Ready/Send Screen ---
-function showSendScreen() {
-  g.clear();
-  Bplog.settings.json';
-const RAW_DATA_FILE = 'sleepdata.json';
+  // Make the watch discoverable
+  NRF.setAdvertising({}, { showName: true, uart: true });
 
-// --- Screen 1: The Main Menu ---
-function showMainMenu() {
-  const menu = {
-    "": { "title": "Sleep Tracker" },
-    "Start Logging": () => {
-      let settings = require("Storage").readJSON(SETTINGS_FILE, true) || {};
-      if (settings.isLogging) {
-        E.showAlertangle.loadWidgets();
-  Bangle.drawWidgets();
-
-  // Draw "SEND DATA" button in the top half
-  g.setFont("Vector", 30).setColor("#00aaff").setFontAlign(0, 0);
-  g.drawString("SEND DATA", g.getWidth() / 2, g.getHeight() * 0.3);
-
-  // Draw "DELETE" button in the bottom half
-  g.setFont("Vector", 30).setColor("#ff0000").setFontAlign(0, 0);
-  g.drawString("DELETE", g.getWidth() / 2, g.getHeight() * 0.7);
-
-  // Set watches for touch areas
-  Bangle.on("touch", (button, xy) => {
-("Already logging!");
-      } else {
-        E.showPrompt("Start new session?\n(Deletes old data)").then(isYes => {
-          if (isYes) {
-            require("Storage").erase(RAW_DATA_FILE);
-            require("Storage").writeJSON(SETTINGS_FILE, { isLogging: true });
-            E.showMessage("Logging Started...", "Sleep Logger");
-            setTimeout(load, 1500); // Exit to clock
-          }
-        });
-      }
-    },
-    "Stop Logging": () => {
-      let settings = require("Storage").readJSON(SETTINGS_FILE, true) || {};
-      if (!settings.isLogging) {
-        E.showAlert("Not currently logging.");
-      } else {
-        require("Storage").writeJSON(SETTINGS_FILE, { isLogging: false });
-        E.showMessage("Logging Stopped", "Sleep Logger");
-      }
-    },
-    "Send Data": () => {
-      sendDataToPhone();
-    },
-    "Exit": () => {
-      load(); // Exit to clock face
-    },
+  // On any button press, exit this mode
+  clearWatch(); // Remove all previous button watchers
+  const goBack = () => {
+    NRF.setAdvertising({}); // Turn off advertising
+    setupMainScreen(); // Go back to the main screen
   };
-
-  E.showMenu(menu);
+  setWatch(goBack, BTN1, { edge: "falling" });
+  setWatch(goBack, BTN2, { edge: "falling" });
+  setWatch(goBack, BTN3, { edge: "falling" });
 }
 
-// --- Logic for Sending Data to the Phone ---
-function sendDataToPhone    if (xy.y < g.getHeight() / 2) {
-      // Top half touched
-      sendDataToPhone();
+// --- Combined UI and Handler Setup ---
+function setupMainScreen() {
+  drawMainUI();
+  // Main button (BTN1) to START/STOP
+  setWatch(() => {
+    let settings = require("Storage").readJSON(SETTINGS_FILE, true) || {};
+    let isLogging = settings.isLogging || false;
+    
+    if (isLogging) {
+      require("Storage").writeJSON(SETTINGS_FILE, { isLogging: false });
+      E.showMessage("Logging Stopped", "Sleep Logger");
+      setTimeout(drawMainUI, 500); 
     } else {
-      // Bottom half touched
-      deleteData();
+      require("Storage").erase('sleepdata.json');
+      require("Storage").writeJSON(SETTINGS_FILE, { isLogging: true });
+      E.showMessage("Logging Started...", "Sleep Logger");
+      setTimeout(load, 1000); 
     }
-  });
-  
-  // Also allow BTN1 to send
-  setWatch(sendDataToPhone, BTN1, { edge: "falling" });
+  }, BTN1, { edge: "falling", repeat: true });
+
+  // BTN2 to Exit the app completely
+  setWatch(load, BTN2, { edge: "falling", repeat: true });
+
+  // BTN3 to enter SEND mode
+  setWatch(showSendDataScreen, BTN3, { edge: "falling", repeat: true });
 }
 
-// --- ACTIONS ---
-function startLogging() {
-  require("Storage").erase() {
-  let file = require("Storage").read(RAW_DATA_FILE);
-  if (!file) {
-    E.showAlert("No data file found to send!");
-    return;
-  }
-  
-  E.showPrompt("Send data to phone?").then(isYes => {
-    if (!isYes) return;
-    
-    // Check if Bluetooth is connected
-    if (!NRF.getSecurityStatus().connected) {
-      E.showAlert("Phone not connected. Open the Android app first.");
-      return;
-    }
-
-    E.showMessage("Sending data...", "Bluetooth");
-    
-    // The Bangle.js 'ble_simple_uart' library handles chunking automatically
-    // when we send a large string with Bluetooth.println
-    Bluetooth.println(JSON.stringify({t:"sleepdata", d:file}));
-    
-    // It(RAW_DATA_FILE); // Erase old data
-  require("Storage").writeJSON(SETTINGS_FILE, { isLogging: true });
-  E.showMessage("Logging Started...", "Sleep Logger");
-  load(); // Exit to clock face
-}
-
-function stopLogging() {
-  require("Storage").writeJSON(SETTINGS_FILE, { isLogging: false });
-  // The boot job will flush the data buffer and stop logging
-  E.showMessage("Logging Stopped", "Sleep Logger");
-  // Give the boot job a moment to save the file, then redraw the UI
-  setTimeout(main, 500);
-}
-
-function sendDataToPhone() {
-  let file = require("Storage").read(RAW_DATA_FILE);
-  if (!file) {
-    E.showAlert("No data to send!");
-    return;
-  }
-  E.showMessage("Sending to Phone...", "Bluetooth");
-  // Wrap the raw data in a JSON object so the phone knows what it is
-  Bluetooth.println(JSON.stringify({ t: "sleepdata", d: file }));
-  Bluetooth.println("\x04"); // End-of-Transmission character
-}
-
-function deleteData() {
-  E.showPrompt("Delete all sleep data?").then((isYes) => {
-    if (isYes) {
-      require("Storage").erase(RAW_DATA_FILE);
-      main(); // Redraw the UI, which will now go to the start screen
-    }
-  });
-}'s good practice to send an End-of-Transmission character
-    // The Bangle might disconnect before the last bit of data is sent otherwise
-    setTimeout(() => {
-      Bluetooth.println("\x04");
-    }, 500);
-  });
-}
-
-// --- App Start ---
-showMainMenu();
+// --- Initial App Start ---
+setupMainScreen();
