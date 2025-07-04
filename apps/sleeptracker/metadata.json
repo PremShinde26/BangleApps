@@ -2,7 +2,7 @@
   "id": "sleeptracker",
   "name": "Sleep Tracker",
   "shortName": "SleepTrack",
-  "version": "0.01",
+  "version": "2.01",
   "description": "Logs Heart Rate and Movement for sleep analysis and allows data to be fetched by a companion Android app.",
   "icon": "icon.png",
   "tags": "health,tool,bluetooth",
