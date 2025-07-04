@@ -1,33 +1,11 @@
 {
   "id": "sleeplog",
   "name": "Sleep Logger",
-  "version": "0.03",
-  "description": "Logs sleep data and sends it to a companion app.",
+  "version": "1.0",
+  "description": "Manually track sleep (HR+Movement) and fetch the raw data using a companion Android app.",
   "icon": "sleeplog.img",
   "type": "app",
-  "tags": "health,tool,bluetooth
-
-// --- MAIN FUNCTION TO DECIDE WHICH SCREEN TO SHOW ---
-function main() {
-  // Clear any existing watches or touch handlers
-  clearWatch();
-  Bangle.removeListener("touch", Bangle.touchHandler);
-
-  let settings = require("Storage").readJSON(SETTINGS_FILE, true) || {};
-  let hasRawData = require("Storage").read(RAW_DATA_FILE) !== undefined;
-
-  if (settings.isLogging) {
-    showStopScreen();
-  } else if (hasRawData) {
-    showSendScreen();
-  } else {
-    showStartScreen();
-  }
-}
-
-// Start the app
-main();
-",
+  "tags": "health,tool,sleep,android",
   "supports": ["BANGLEJS"],
   "storage": [
     {"name":"sleeplog.app.js","url":"sleeplog.app.js"},
