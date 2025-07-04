@@ -1,4 +1,1 @@
-// Renamed to app-icon.js for the App Loader
-// Original: sleeplog.img (in code form)
-// A simple blue moon icon
-require("heatshrink").decompress(atob("mEwwICYfwA/AH4A/AH4A/AFoA/AFoA/AFoA/AGwA/AGwA/AGwA/AHAEOAHAEOAHAEOAHAGeAHAEOAHAHWAL8A/AFgA/AFgA/AFgA/AH4A/AH4A/AH4A/ADg="));
+require("heatshrink").decompress(atob("mEwwhC/AH4AfhGIxGAC9YABxBIWF05ZCCYRfRC65CCLSoqBOKwutO4oAK7vd6AXbACAXz93uC6kOC4PgC6YWBAAMCkQAJkAXWkQX2O4YXTU4YXS6czAAUyC/4XBACIX/C8rXBABkNC/4XNAH4A/ABoA="))
