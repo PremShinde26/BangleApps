@@ -1,7 +1,7 @@
 // File: app.js
 // Purpose: A simple, clean UI to start/stop logging and to initiate data sending.
 
-const SETTINGS_FILE = 'sleeplogger.settings.json';
+const SETTINGS_FILE = 'sleeptracker.settings.json';
 
 // --- Main UI: The big Start/Stop screen ---
 function drawMainUI() {
