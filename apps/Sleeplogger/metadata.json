@@ -11,6 +11,7 @@
   "storage": [
     {"name":"app.js","url":"app.js"},
     {"name":"boot.js","url":"boot.js"}
+    {"name":"HRV.img","url":"app-icon.js","evaluate":true}
   ],
   "data": [
     {"name":"sleeplogger.data.json"},
