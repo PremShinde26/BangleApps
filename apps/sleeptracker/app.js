@@ -42,7 +42,7 @@ function showSendDataScreen() {
   NRF.setAdvertising({}, { showName: true, uart: true });
 
   // On any button press, exit this mode
-  clearWatch();
+  clearWatch(); // Remove all previous button watchers
   const goBack = () => {
     NRF.setAdvertising({}); // Turn off advertising
     setupMainScreen(); // Go back to the main screen
@@ -70,8 +70,13 @@ function setupMainScreen() {
     }
   }, BTN1, { edge: "falling", repeat: true });
 
-  // BTN2 to Exit the app completely
-  setWatch(load, BTN2, { edge: "falling", repeat: true });
+  // --- FIX IS HERE ---
+  // BTN2 to Exit the app completely, but do it cleanly.
+  setWatch(() => {
+    clearWatch(); // Remove all button watchers first
+    load();       // Now it's safe to load the clock
+  }, BTN2, { edge: "falling", repeat: true });
+  // --- END OF FIX ---
 
   // BTN3 to enter SEND mode
   setWatch(showSendDataScreen, BTN3, { edge: "falling", repeat: true });
