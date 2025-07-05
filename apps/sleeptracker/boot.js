@@ -1,8 +1,7 @@
-// File: sleeptracker.boot.js
+// File: sleeptracker.boot.js (Final Production Version)
 // Purpose: Handles all background tasks: logging and communication.
 
 (function() {
-  // *** FILENAMES UPDATED FOR CONSISTENCY ***
   const STORAGE_FILE = 'sleeptracker.data.json';
   const SETTINGS_FILE = 'sleeptracker.settings.json';
   const LOG_INTERVAL_MS = 60000;
@@ -54,7 +53,7 @@
     while (newlineIndex >= 0) {
       let command = receiveBuffer.substring(0, newlineIndex).trim();
       receiveBuffer = receiveBuffer.substring(newlineIndex + 1);
-      if (command === "\x10loadsleep") {
+      if (command.includes("loadsleep")) {
         let file = require("Storage").read(STORAGE_FILE);
         if (file) {
           let pos=0, chunkSize=20;
