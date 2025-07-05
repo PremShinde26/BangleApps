@@ -1,5 +1,5 @@
 // File: android.boot.js (Version 3 - Can send AND receive files)
-
+ /*
 (function() {
   NRF.setAdvertising({}, { showName: true, uart: true });
 
@@ -61,3 +61,4 @@
     }
   });
 })();
+*/ 
